@@ -1,12 +1,3 @@
-def parenthesize(line):
-  if line.find('(') >= 0:
-    line = line.replace('(', ' ( ', len(line))
-
-  if line.find(')') >= 0:
-    line = line.replace(')', ' ) ', len(line))
-
-  return line
-
 def tokenize(line):
   """
   tokenize(line) -> string
@@ -15,7 +6,9 @@ def tokenize(line):
   a series of tokens.
   """
 
-  line = parenthesize(line)
+  line = line.replace('(', ' ( ').replace(')', ' ) ').split(' ')
+  return [atom for atom in line if atom]
 
-  line = line.split(' ')
-  return line
+if __name__ == '__main__':
+
+  print tokenize('((lambda(x) x "Lisp")')
