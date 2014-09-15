@@ -1,3 +1,5 @@
+import re
+
 def read(user_input):
   return parser(tokenize(user_input))
 
@@ -36,7 +38,7 @@ def tokenize(line):
   Takes a string of Scheme code and breaks it up into
   a series of tokens in a list.
   """
-  return line.replace('(',' ( ').replace(')',' ) ').split()
+  return re.findall(r'(?:[^\s,"]|"(?:\\.|[^"])*")+', line.replace('(',' ( ').replace(')',' ) ')  )
 
 
 if __name__ == '__main__':
