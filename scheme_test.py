@@ -2,7 +2,7 @@ import unittest
 from scheme import tokenize, parser, read, Environment, eval
 
 
-class TestScheme(unittest.TestCase):
+class TestParser(unittest.TestCase):
 
   line = '((lambda(x) x) "Lisp")'
 
@@ -12,28 +12,48 @@ class TestScheme(unittest.TestCase):
   def test_parser(self):
     self.assertEqual(parser(tokenize(self.line)), [['lambda', ['x'], 'x'], '"Lisp"'])
 
-  def test_read_simple_expression(self):
-    self.assertEqual(read('(1 2)'), ['1', '2'])
+  def test_read_number_list(self):
+    self.assertEqual(read('(1 2 3.14 22.22)'), [1, 2, 3.14, 22.22])
 
   def test_read_simple_lambda(self):
     self.assertEqual(read(self.line), [['lambda', ['x'], 'x'], '"Lisp"'])
 
+
+class TestEnvironment(unittest.TestCase):
+
   def test_environment(self):
-    a = Environment([{}])
-
-    self.assertEqual(a.get('x'), None)
+    env = Environment([{}])
+    self.assertEqual(env.get('x'), None)
     
-    a.set('x', 1)
-    self.assertEqual(a.get('x'), 1)
+    env.set('x', 1)
+    self.assertEqual(env.get('x'), 1)
 
-    a.add_scope()
-    a.set('x', 2)
+    env.set('y', 'foo')
+    self.assertEqual(env.get('y'), 'foo')
+    self.assertEqual(env.get('x'), 1)
 
-    self.assertEqual(a.get('x'), 2)
+    env.add_scope()
+    env.set('x', 2)
+    self.assertEqual(env.get('x'), 2)
 
-    a.remove_scope()
+    env.remove_scope()
+    self.assertEqual(env.get('x'), 1)
 
-    self.assertEqual(a.get('x'), 1)
+  def test_eval(self):
+    exp = eval(['x'])
+    self.assertEqual(exp, None)
+
+    exp = eval(['x'], Environment([{'x': 1}]))
+    self.assertEqual(exp, 1)
+
+    exp = eval(['"foo"'], Environment([{'_': "foo"}]))
+    self.assertEqual(exp, None)
+
+    exp = eval([-5], Environment([{'_': -5}]))
+    self.assertEqual(exp, -5)
+
+    # exp = eval('if (boolean? #t) \'foo \'bar')
+    # self.assertEqual(exp, True)
 
 
 
