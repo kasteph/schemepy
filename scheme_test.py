@@ -40,20 +40,30 @@ class TestEnvironment(unittest.TestCase):
     self.assertEqual(env.get('x'), 1)
 
   def test_eval(self):
-    exp = eval(['x'])
+    exp = eval('x')
     self.assertEqual(exp, None)
 
-    exp = eval(['x'], Environment([{'x': 1}]))
+    exp = eval('x', Environment([{'x': 1}]))
     self.assertEqual(exp, 1)
 
-    exp = eval(['"foo"'], Environment([{'_': "foo"}]))
-    self.assertEqual(exp, None)
+    exp = eval('"foo"')
+    self.assertEqual(exp, '"foo"')
 
-    exp = eval([-5], Environment([{'_': -5}]))
+    exp = eval(-5)
     self.assertEqual(exp, -5)
 
-    # exp = eval('if (boolean? #t) \'foo \'bar')
-    # self.assertEqual(exp, True)
+    exp = eval(['quote', '"foo"'])
+    self.assertEqual(exp, '"foo"')
+
+    exp = eval(['+', 1, 1])
+    self.assertEqual(exp, 2)
+
+    exp = eval(['if', ['<', 1, 2], '#t', '#f'])
+    self.assertEqual(exp, True)
+
+    exp = eval(['lambda', ['x'], 'x'])
+    self.assertIsInstance(exp, type(lambda: None))
+    self.assertEqual(exp(1), 1)
 
 
 

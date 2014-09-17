@@ -1,4 +1,5 @@
 import re
+import operator
 
 def read(user_input):
   return parser(tokenize(user_input))
@@ -55,31 +56,63 @@ def transform_nums(line):
       continue
   return line
 
+def is_string(x):
+  return isinstance(x, str) and x.startswith('"') and x.endswith('"')
 
-# isa and Symbol from Norvig's lis.py
-isa = isinstance
-Symbol = str
-Number = (int, float)
-quotes = '"'
+def is_symbol(x):
+  return isinstance(x, str) and not is_string(x)
+
+def is_number(x):
+  return isinstance(x, (int, float))
+
 def eval(exp, env=None):
-  current_exp = exp[0]
   if env == None:
     return eval(exp, Environment([{}]))
-  # elif isa(exp, Symbol):
-  #   return exp
-  # elif isa(exp, Number):
-  #   return exp
-  # elif isa(current_exp, str) and quotes in exp:
-  #   return env.get(current_exp)
-  # elif isa(exp, str) and quotes not in exp:
-  #   return env.get(exp)
-  # elif exp[0]
+  elif is_symbol(exp):
+    return env.get(exp)
+  elif is_string(exp):
+    return exp
+  elif is_number(exp):
+    return exp
+  elif exp[0] == 'quote':
+    (_, x) = exp
+    return x
+  elif exp[0] == 'if':
+    (_, test, truthy, falsy) = exp
+    return eval((truthy if eval(test) else falsy), env)
+  elif exp[0] == 'lambda':
+    (_, v, expr) = exp
+    new_env = env.create()
+    def lambda_func(*args):
+      assert len(args) == len(v), 'Something wrong happened'
+      new_env.add_scope()
+      for param, arg in zip(v, args):
+        new_env.set(param, arg)
+      return eval(expr, new_env)
+    return lambda_func
+  # elif is_lambda(exp[0]):
+  #   l = exp[0]
+
+  else:
+    func = eval(exp[0], env)
+    return func(*[eval(x) for x in exp[1:]])
 
 
+def REP(line):
+  return eval(read(line))
+
+builtins = {
+  '+': lambda *args: sum(args),
+  '>': operator.gt,
+  '<': operator.lt,
+  '#t': True,
+  '#f': False
+}
 
 class Environment(object):
   def __init__(self, scopes):
     self.scopes = scopes
+    self.scopes.append(builtins)
 
   def get(self, symbol):
     for scope in self.scopes:
@@ -95,9 +128,12 @@ class Environment(object):
   def remove_scope(self):
     self.scopes.pop(0)
 
+  def create(self):
+    return Environment(self.scopes)
 
 
 if __name__ == '__main__':
 
-  scheme = raw_input()
-  print read(scheme)
+  while True:
+    scheme = raw_input()
+    print REP(scheme)
