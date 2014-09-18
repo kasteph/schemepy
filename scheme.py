@@ -48,19 +48,27 @@ def eval(exp, env=None):
   elif is_if(exp):
     (_, test, truthy, falsy) = exp
     return eval((truthy if eval(test) else falsy), env)
+  elif is_let(exp):
+    (_, variables, expr) = exp
+    (names, vals) = map(lambda L: list(L), list(zip(*variables)))
+    exp = ['lambda', names, expr]
+    return eval_lambda(exp, env)(*vals)
   elif is_lambda(exp):
-    (_, v, expr) = exp
-    new_env = env.create()
-    def lambda_func(*args):
-      assert len(args) == len(v), 'Something wrong happened'
-      new_env.add_scope()
-      for param, arg in zip(v, args):
-        new_env.set(param, arg)
-      return eval(expr, new_env)
-    return lambda_func
+    return eval_lambda(exp, env)
   else:
     func = eval(exp[0], env)
     return func(*[eval(x) for x in exp[1:]])
+
+def eval_lambda(exp, env):
+  (_, variables, expr) = exp
+  new_env = env.create()
+  def lambda_func(*args):
+    assert len(args) == len(variables), 'Something wrong happened'
+    new_env.add_scope()
+    for param, arg in zip(variables, args):
+      new_env.set(param, arg)
+    return eval(expr, new_env)
+  return lambda_func
 
 def REP(line):
   return eval(read(line))

@@ -15,3 +15,6 @@ def is_quote(x):
 
 def is_if(x):
   return x[0] == 'if'
+
+def is_let(x):
+  return x[0] == 'let'

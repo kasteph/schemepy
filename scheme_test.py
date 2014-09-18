@@ -69,7 +69,11 @@ class TestEval(unittest.TestCase):
     self.assertIsInstance(exp, type(lambda: None))
     self.assertEqual(exp(1), 1)
 
+    exp = eval(read('(let ((x 4)) x)'))
+    self.assertEqual(exp, 4)
 
+    exp = eval(read('(let ((x 4)) (let ((x 3)) x))'))
+    self.assertEqual(exp, 3)
 
 
 if __name__ == '__main__':
