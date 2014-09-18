@@ -1,5 +1,6 @@
 import unittest
-from scheme import tokenize, parser, read, Environment, eval
+from parser import tokenize, parser, read
+from scheme import Environment, eval
 
 
 class TestParser(unittest.TestCase):
@@ -38,6 +39,9 @@ class TestEnvironment(unittest.TestCase):
 
     env.remove_scope()
     self.assertEqual(env.get('x'), 1)
+
+
+class TestEval(unittest.TestCase):
 
   def test_eval(self):
     exp = eval('x')
