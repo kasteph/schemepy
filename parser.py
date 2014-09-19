@@ -13,10 +13,12 @@ def parser(tokens):
   """
   parsed = []
 
+  if not tokens[0] == '(':
+    return tokens[0]
+
   open_paren = tokens.pop(0)
 
   while tokens:
-
     token = tokens[0]
     if token == '(':
       parsed.append(parser(tokens))

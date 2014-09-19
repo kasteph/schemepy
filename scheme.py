@@ -33,49 +33,62 @@ class Environment(object):
   def create(self):
     return Environment(self.scopes)
 
-def eval(exp, env=None):
-  if env == None:
-    return eval(exp, Environment([{}]))
-  elif is_symbol(exp):
-    return env.get(exp)
-  elif is_string(exp):
-    return exp
-  elif is_number(exp):
-    return exp
-  elif is_quote(exp):
-    (_, x) = exp
-    return x
-  elif is_if(exp):
-    (_, test, truthy, falsy) = exp
-    return eval((truthy if eval(test) else falsy), env)
-  elif is_let(exp):
-    (_, variables, expr) = exp
-    (names, vals) = map(lambda L: list(L), list(zip(*variables)))
-    exp = ['lambda', names, expr]
-    return eval_lambda(exp, env)(*vals)
-  elif is_lambda(exp):
-    return eval_lambda(exp, env)
-  else:
-    func = eval(exp[0], env)
-    return func(*[eval(x) for x in exp[1:]])
+class Evaluator(object):
 
-def eval_lambda(exp, env):
-  (_, variables, expr) = exp
-  new_env = env.create()
-  def lambda_func(*args):
-    assert len(args) == len(variables), 'Something wrong happened'
-    new_env.add_scope()
-    for param, arg in zip(variables, args):
-      new_env.set(param, arg)
-    return eval(expr, new_env)
-  return lambda_func
+  def __init__(self):
+    self.env = Environment([{}])
+  
 
-def REP(line):
-  return eval(read(line))
+  def eval(self, exp, env=None):
+    if env == None:
+      return self.eval(exp, self.env)
+    elif is_symbol(exp):
+      return env.get(exp)
+    elif is_string(exp):
+      return exp
+    elif is_number(exp):
+      return exp
+    elif is_quote(exp):
+      (_, x) = exp
+      return x
+    elif is_if(exp):
+      (_, test, truthy, falsy) = exp
+      return self.eval((truthy if self.eval(test) else falsy), env)
+    elif is_let(exp):
+      variables = exp[1]
+      exprs = exp[2:]
+      (names, vals) = map(lambda L: list(L), list(zip(*variables)))
+      exp = ['lambda', names]
+      exp += exprs
+      return self.eval_lambda(exp, env)(*vals)
+    elif is_lambda(exp):
+      return self.eval_lambda(exp, env)
+    elif is_define(exp):
+      (_, variable, value) = exp
+      env.set(variable, value)
+    else:
+      func = self.eval(exp[0], env)
+      return func(*[self.eval(x) for x in exp[1:]])
+
+  def eval_lambda(self, exp, env):
+    variables = exp[1]
+    exprs = exp[2:]
+    new_env = env.create()
+    def lambda_func(*args):
+      assert len(args) == len(variables), 'Something wrong happened'
+      new_env.add_scope()
+      for param, arg in zip(variables, args):
+        new_env.set(param, arg)
+      return ([self.eval(x, new_env) for x in exprs])[-1]
+    return lambda_func
+
+def REP(line, evaluator):
+  return evaluator.eval(read(line))
 
 
 if __name__ == '__main__':
 
+  e = Evaluator()
   while True:
     scheme = raw_input()
-    print REP(scheme)
+    print REP(scheme, e)

@@ -18,3 +18,6 @@ def is_if(x):
 
 def is_let(x):
   return x[0] == 'let'
+
+def is_define(x):
+  return x[0] == 'define'
