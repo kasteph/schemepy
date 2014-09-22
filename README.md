@@ -17,7 +17,7 @@ it can also `define` a variable and evaluate its expression if it has any.
 
 what it doesn't do
 --------
-`set!`, `begin`, `proc`
+`set!`, `begin`
 
 todo
 --------
