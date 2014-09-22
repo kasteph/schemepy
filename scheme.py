@@ -5,11 +5,16 @@ from parser import read
 
 builtins = {
   '+': lambda *args: sum(args),
+  '-': lambda *args: reduce(operator.sub, args, 0),
+  '*': lambda *args: reduce(operator.mul, args, 1),
+  '/': lambda *args: reduce(operator.div, args)
   '>': operator.gt,
   '<': operator.lt,
   '#t': True,
   '#f': False
 }
+
+
 
 class Environment(object):
   def __init__(self, scopes):
@@ -32,6 +37,9 @@ class Environment(object):
 
   def create(self):
     return Environment(self.scopes)
+
+  def fetch_scopes(self):
+    return self.scopes
 
 class Evaluator(object):
 
