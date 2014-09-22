@@ -7,7 +7,7 @@ builtins = {
   '+': lambda *args: sum(args),
   '-': lambda *args: reduce(operator.sub, args, 0),
   '*': lambda *args: reduce(operator.mul, args, 1),
-  '/': lambda *args: reduce(operator.div, args)
+  '/': lambda *args: reduce(operator.div, args),
   '>': operator.gt,
   '<': operator.lt,
   '#t': True,
