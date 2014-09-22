@@ -64,11 +64,12 @@ class Evaluator(object):
     elif is_lambda(exp):
       return self.eval_lambda(exp, env)
     elif is_define(exp):
-      (_, variable, value) = exp
-      env.set(variable, value)
+      variable = exp[1]
+      value = exp[2]
+      env.set(variable, self.eval(value, env))
     else:
       func = self.eval(exp[0], env)
-      return func(*[self.eval(x) for x in exp[1:]])
+      return func(*[self.eval(x, env) for x in exp[1:]])
 
   def eval_lambda(self, exp, env):
     variables = exp[1]
