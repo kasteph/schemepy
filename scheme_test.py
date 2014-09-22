@@ -1,6 +1,7 @@
 import unittest
 from parser import tokenize, parser, read
-from scheme import Environment, Evaluator
+from environment import Environment
+from evaluator import Evaluator
 
 
 class TestParser(unittest.TestCase):
