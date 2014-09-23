@@ -1,8 +1,11 @@
+def is_basestring(x):
+  return isinstance(x, basestring)
+
 def is_string(x):
-  return isinstance(x, str) and x.startswith('"') and x.endswith('"')
+  return is_basestring(x) and x.startswith('"') and x.endswith('"')
 
 def is_symbol(x):
-  return isinstance(x, str) and not is_string(x)
+  return is_basestring(x) and not is_string(x)
 
 def is_number(x):
   return isinstance(x, (int, float))
