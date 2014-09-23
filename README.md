@@ -10,7 +10,7 @@ what it does
 --------
 It evaluates:
 * `if` statements
-* `lambda` and `lambda` expressions
+* `let` and `lambda` expressions
 * some simple math
  
 it can also `define` a variable and evaluate its expression if it has any.
