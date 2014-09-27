@@ -1,3 +1,4 @@
+from parser import read
 from evaluator import Evaluator
 
 def REP(line, evaluator):
