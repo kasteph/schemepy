@@ -25,12 +25,13 @@ def is_let(x):
 def is_define(x):
     return x[0] == 'define'
 
-# def is_primitive(x):
-#     return x[0] in primitives
+def special_form(x):
+    return primitives[x[0]](x)
 
-def get_eq(first_val, second_val):
+def get_eq(x):
+    (_, first_val, second_val) = x
     return first_val == second_val
 
 primitives = {
-    'eq?': get_eq
+    'eqv?': get_eq
 }

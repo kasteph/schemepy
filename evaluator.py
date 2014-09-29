@@ -1,4 +1,4 @@
-from identity import *
+from forms import *
 from parser import read
 from environment import Environment
 
@@ -30,17 +30,14 @@ class Evaluator(object):
             exp = ['lambda', names]
             exp += exprs
             return self.eval_lambda(exp, env)(*vals)
-        elif exp[0] == 'eq?':
-            (_, first_val, second_val) = exp
-            return primitives[exp[0]](exp)
-            # return get_eq(first_val, second_val)
-        #     return self.eval_primitive(exp)
         elif is_lambda(exp):
             return self.eval_lambda(exp, env)
         elif is_define(exp):
             variable = exp[1]
             value = exp[2]
             env.set(variable, self.eval(value, env))
+        elif exp[0] in ['eqv?']:
+            return special_form(exp)
         else:
             func = self.eval(exp[0], env)
             return func(*[self.eval(x, env) for x in exp[1:]])
@@ -58,20 +55,3 @@ class Evaluator(object):
         return lambda_func
 
 
-    def is_primitive(self, exp):
-        if exp[0] in primitives:
-            return True
-        # return exp[0] in primitives
-      
-
-    def eval_primitive(self, exp):
-        return primitives[exp[0]](exp)
-
-
-def is_it_equal(exp):
-    (_, first_val, second_val) = exp
-    return first_val == second_val
-
-primitives = {
-    'eq?': is_it_equal
-}
