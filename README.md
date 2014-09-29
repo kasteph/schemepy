@@ -5,6 +5,12 @@ A toy Scheme interpreter written in Python. With guidance from Peter Norvig's
 [lispy tutorial](http://norvig.com/lispy.html) and Mary Rose Cook's
 [Little Lisp Interpreter](https://www.hackerschool.com/blog/21-little-lisp-interpreter).
 
+to use
+--------
+* download, clone, or fork
+* navigate to directory
+* run `python scheme.py` or `rlwrap python scheme.py` if you have rlwrap installed for readline support.
+
 
 what it does
 --------
