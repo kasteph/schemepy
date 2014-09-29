@@ -1,6 +1,7 @@
 import re
 
 def read(user_input):
+    print 'read', user_input
     return parser(tokenize(user_input))
 
 def parser(tokens):

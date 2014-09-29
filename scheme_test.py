@@ -118,6 +118,10 @@ class TestEval(unittest.TestCase):
         next_exp = e.eval(read('(square 5)'))
         self.assertEqual(next_exp, 25)
 
+    def test_eq_special_form(self):
+        e = Evaluator()
+        exp = e.eval(read('(eq? 1 1)'))
+        self.assertEqual(exp, True)
 
 
 if __name__ == '__main__':
