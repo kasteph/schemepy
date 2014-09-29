@@ -24,3 +24,13 @@ def is_let(x):
 
 def is_define(x):
     return x[0] == 'define'
+
+# def is_primitive(x):
+#     return x[0] in primitives
+
+def get_eq(first_val, second_val):
+    return first_val == second_val
+
+primitives = {
+    'eq?': get_eq
+}
