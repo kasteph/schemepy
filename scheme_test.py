@@ -118,10 +118,20 @@ class TestEval(unittest.TestCase):
         next_exp = e.eval(read('(square 5)'))
         self.assertEqual(next_exp, 25)
 
-    def test_eq_special_form(self):
+    def test_eqv_special_form(self):
         e = Evaluator()
-        exp = e.eval(read('(eq? 1 1)'))
+        exp = e.eval(read('(eqv? 1 1)'))
         self.assertEqual(exp, True)
+
+    def test_complex_eqv_special_form(self):
+        e = Evaluator()
+        exp = e.eval(read('(let ((p (lambda (x) x))) (eqv? p p)'))
+        self.assertEqual(exp, True)
+
+    def test_falsy_eqv_special_form(self):
+        e = Evaluator()
+        exp = e.eval(read('eqv? 1 2'))
+        self.assertEqual(exp, False)
 
 
 if __name__ == '__main__':
