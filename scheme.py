@@ -1,14 +1,23 @@
+import sys
+
 from parser import read
 from evaluator import Evaluator
 from parser import read
 
-def REP(line, evaluator):
-    return evaluator.eval(read(line))
+def REPL(line, evaluator):
+    try:
+        return evaluator.eval(read(line))
+    except IndexError:
+        return ''
 
 
 if __name__ == '__main__':
-
+    print 'Welcome to schemepy. Press <Ctrl-c> to exit.'
     e = Evaluator()
     while True:
-        scheme = raw_input()
-        print REP(scheme, e)
+        try:
+            scheme = raw_input()
+            print REPL(scheme, e)
+        except (KeyboardInterrupt, SystemExit):
+            print 'Exiting schemepy.'
+            sys.exit()
