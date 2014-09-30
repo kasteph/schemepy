@@ -130,7 +130,7 @@ class TestEval(unittest.TestCase):
 
     def test_falsy_eqv_special_form(self):
         e = Evaluator()
-        exp = e.eval(read('eqv? 1 2'))
+        exp = e.eval(read('(eqv? 1 2)'))
         self.assertEqual(exp, False)
 
 
