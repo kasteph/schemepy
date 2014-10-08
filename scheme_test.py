@@ -112,11 +112,16 @@ class TestEval(unittest.TestCase):
         exp = e.eval(read('(define x 4)'))
         self.assertEqual(e.env.get('x'), 4)
 
-    def test_define_function_call(self):
+    def test_define_lambda(self):
         e = Evaluator()
         exp = e.eval(read('(define square (lambda (x)  (* x x)))'))
         next_exp = e.eval(read('(square 5)'))
         self.assertEqual(next_exp, 25)
+
+    def test_define_func(self):
+        e = Evaluator()
+        exp = e.eval(read('(define (square a) (* a a))'))
+        self.assertIsInstance(exp, type(lambda: None))
 
     def test_eqv_special_form(self):
         e = Evaluator()
